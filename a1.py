@@ -143,7 +143,7 @@ def gauss_multiple_pivot(a, b):
       Test: This function is is tested by the function 
             test_gauss_multiple_pivot in tests/test_gauss_multiple.py.
     '''
-
+//test
     ## YOUR CODE GOES HERE
     raise Exception("Function not implemented")
 
