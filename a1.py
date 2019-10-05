@@ -167,17 +167,6 @@ def gauss_multiple(a, b):
     '''
 
     ## YOUR CODE GOES HERE
-#     assert(determinant(a)!=0)
-#     d = len(b)
-#     for i  in range(0,d-1):
-#         for j in range(i+1,d):
-#             if(a[j,i] !=0.0):
-#                 c=a [j,i]/a[i,i]
-#                 a[j,i+1:d] = a[j,i+1:d] - c*a[i,i-1:d]
-#                 b[j]=b[j]-c*b[i]
-#     for k in range(d-1,-1,-1):
-#         b[k] = (b[k] - dot(a[k,k+1:],b[k+1:]))/a[k,k]
-#     return b
 
     assert(determinant(a)!=0)
 
@@ -189,15 +178,10 @@ def gauss_multiple(a, b):
                 lam = a [i,k]/a[k,k]
                 a[i,k+1:n] = a[i,k+1:n] - lam*a[k,k+1:n]
                 b[i] = b[i] - lam*b[k]
-
-    # Back substitution
     for k in range(n-1,-1,-1):
         b[k] = (b[k] - dot(a[k,k+1:n],b[k+1:n]))/a[k,k]
     
     return b
-
-
-
 
     raise Exception("Function not implemented")
 
@@ -329,7 +313,7 @@ def gauss_elimination_pivot(a, b, verbose=False):
                 print(a, b)
 
 def gauss_elimination_multiple(a, b):
-    assert (determinant(a)!= 0)
+#     assert (determinant(a)!= 0)
     n, m = shape(a)
     n2, n3 = shape(b)
     assert(n==n2)
