@@ -1,28 +1,4 @@
-from numpy import *
-
-
-'''
-   PART 1: Warm-up
-'''
-
-
-def example_func():
-    '''
-      Important: READ THIS CAREFULLY. 
-      Task: This function is an example, you don't have to modify it.
-      Example: Nothing to report here, really.
-      Test: This function is is tested in tests/test_example.py
-            This test just gives you a bonus, yay!
-      Hint: The functions below have to be implemented in Python, without
-            using any function from numpy's linear algebra module. In each function, a
-            docstring formatted as the present one explains what the 
-            function must do (Task), gives an example of output 
-            (Example), explains how it will be evaluated (Test), and 
-            may give you some hints (Hint).
-    '''
-    return 'It works!'
-
-
+from sympy import *
 def square(a):
     '''
       Task: This function tests if a matrix is square. It returns True 
@@ -32,8 +8,13 @@ def square(a):
       Test: This function is is tested in tests/test_square.py
       Hint: Use numpy's shape function.
     '''
-
     ## YOUR CODE GOES HERE
+    nbofrow=len(a)
+    for row in a:
+        if len(row)!=nbofrow:
+            return False
+        return True
+
     raise Exception("Function not implemented")
 
 
@@ -58,8 +39,26 @@ def fit_poly_2(points):
               instance, 3 points are aligned).
       Hint: This should be done by solving a linear system.
     '''
-
     ## YOUR CODE GOES HERE
+    a=Symbol('a')
+    b=Symbol('b')
+    c=Symbol('c')
+    cons=[[0 for i in range(3)] for j in range(3)]
+    for i in range(len(points)):
+                cons[i][0]=(-pow(points[i][0],2))
+                cons[i][1]=(-points[i][0])
+                cons[i][2]=(points[i][1])
+    arr=[cons[0][0],cons[0][1],cons[0][2]]
+    for j in range(3):
+            for k in range(3):
+                if(j==0):
+                    cons[j][k]=cons[j][k]-cons[j+1][k]
+                if(j==1):
+                    cons[j][k]=cons[j][k]-cons[j+1][k]
+                if(j==2):
+                    cons[j][k]=cons[j][k]-arr[k]
+    r=solve([cons[0][0]*a + cons[0][1]*b + cons[0][2],cons[1][0]*a + cons[1][1]*b + cons[1][2],arr[0]*a+arr[1]*b+arr[2]-c],[a,b,c])
+    return r
     raise Exception("Function not implemented")
 
 
@@ -83,6 +82,16 @@ def fit_poly(points):
     '''
 
     ## YOUR CODE GOES HERE
+    d = len(points)
+    a = zeros((n,n))
+    b = zeros(n)
+    for i in range(d):
+        for j in range(d):
+            a[i][j] =(pow(points[i][0],2))
+    for k in range(d):
+        b[k] = points[k][1]
+    gauss_elimination(a,b)
+    return gauss_substitution(a,b)
     raise Exception("Function not implemented")
 
 
@@ -107,6 +116,21 @@ def tridiag_solver_n(n):
     '''
 
     ## YOUR CODE GOES HERE
+    x1=zeros((n,n))
+    x2=zeros(n)
+    x1[0][0] = 4
+    x1[0][1] = -1
+    x1[n-1][n-2] = -1
+    x1[n-1][n-1] = 4
+    for i in range (1,n-1) :
+       x1[i][i-1] = -1
+       x1[i][i] = 4
+       x1[i][i+1] = -1
+    x2[0]=9
+    for j in range(1,n):
+        x2[j] = 5
+    gauss_elimination(a,b)
+    return gauss_substitution(a,b)
     raise Exception("Function not implemented")
 
 
@@ -131,6 +155,20 @@ def gauss_multiple(a, b):
     '''
 
     ## YOUR CODE GOES HERE
+    assert(determinant(a)!=0)
+    d = len(b)
+    for i  in range(0,d-1):
+        for j in range(k+1,d):
+            if(a[j,i] !=0.0):
+                c=a [j,i]/a[i,i]
+                a[j,i+1:n] = a[j,i+1:n] - c*a[i,i-1:n]
+                b[j]=b[j]-c*b[i]
+    for k in range(n-1,-1,-1):
+        b[k] = (b[k] - dot(a[k,k+1:],b[k+1:]))/a[k,k]
+    return b
+
+
+
     raise Exception("Function not implemented")
 
 
@@ -143,8 +181,11 @@ def gauss_multiple_pivot(a, b):
       Test: This function is is tested by the function 
             test_gauss_multiple_pivot in tests/test_gauss_multiple.py.
     '''
-//test
+
     ## YOUR CODE GOES HERE
+    gauss_elimination_multiple(a,b)
+    answer =  gauss_multiple(a,b)
+    return answer
     raise Exception("Function not implemented")
 
 
@@ -157,6 +198,115 @@ def matrix_invert(a):
       Hint: Remember that the inverse of A is the solution of n linear systems of n 
             equations.
     '''
-
+    size = len(a)
+    b=zeros((size,size))
+    for i in range(size):
+        b[i][i]=1
+    gauss_elimination_multiple(a,b)
+    answer=gauss_multiple(a,b)
+    return answer
     ## YOUR CODE GOES HERE
+
     raise Exception("Function not implemented")
+
+##Below From Textbook 
+def gauss_elimination(a, b, verbose=False):
+    n, m = shape(a)
+    n2,  = shape(b)
+    assert(n==n2)
+    for k in range(n-1):
+        for i in range(k+1, n):
+            assert(a[k,k] != 0) # woops, what happens in this case? we'll talk about it later!
+            if (a[i,k] != 0): # no need to do anything when lambda is 0
+                lmbda = a[i,k]/a[k,k] # lambda is a reserved keyword in Python
+                a[i, k:n] = a[i, k:n] - lmbda*a[k, k:n] # list slice operations
+                b[i] = b[i] - lmbda*b[k] # don't forget this step! 
+            if verbose:
+                print(a, b)
+
+def gauss_substitution(a, b):
+    n, m = shape(a)
+    n2, = shape(b)
+    assert(n==n2)
+    x = zeros(n)
+    for i in range(n-1, -1, -1): # decreasing index
+        x[i] = (b[i] - dot(a[i,i+1:], x[i+1:]))/a[i,i]
+    return x
+
+def swap(a, i, j):
+    if len(shape(a)) == 1:
+        a[i],a[j] = a[j],a[i] # unpacking
+    else:
+        a[[i, j], :] = a[[j, i], :]
+
+def determinant(a):
+    # Check that a is square and of size at least 2
+    n, m = shape(a)
+    assert(n>=2)
+    assert(n==m)
+    # Case n = 2
+    if n == 2:
+        return a[0,0]*a[1,1]-a[0,1]*a[1,0]
+    # Case n > 2
+    det = 0
+    for k in range(n): # from 0 to n-1
+        # Build Mik
+        m = zeros((n-1,n-1))
+        i = 0 # could be any int between 0 and n-1
+        for l in range(0, n):
+            if l == i: # skip row i
+                continue
+            for j in range(n-1):
+                if j < k:
+                    m[l-1,j] = a[l,j]
+                else:
+                    m[l-1,j] = a[l,j+1] # skip column k
+        det += (-1)**(k)*a[i,k]*determinant(m) # recursive call to the function
+    return det
+
+def gauss_elimination_pivot(a, b, verbose=False):
+    n, m = shape(a)
+    n2,  = shape(b)
+    assert(n==n2)
+    # New in pivot version
+    s = zeros(n)
+    for i in range(n):
+        s[i] = max(abs(a[i, :]))
+    for k in range(n-1):
+        # New in pivot version
+        p = argmax(abs(a[k:,k])/s[k:]) + k
+        swap(a, p, k)
+        swap(b, p, k)
+        swap(s, p, k)
+        # The remainder remains as in the previous version
+        for i in range(k+1, n):
+            assert(a[k,k] != 0) # this shouldn't happen now, unless the matrix is singular
+            if (a[i,k] != 0): # no need to do anything when lambda is 0
+                lmbda = a[i,k]/a[k,k] # lambda is a reserved keyword in Python
+                a[i, k:n] = a[i, k:n] - lmbda*a[k, k:n] # list slice operations
+                b[i] = b[i] - lmbda*b[k]
+            if verbose:
+                print(a, b)
+
+def gauss_elimination_multiple(a, b):
+    assert (determinant(a)!= 0)
+    n, m = shape(a)
+    n2, n3 = shape(b)
+    assert(n==n2)
+    # New in pivot version
+    s = zeros(n)
+    for i in range(n):
+        s[i] = max(abs(a[i, :]))
+    for k in range(n-1):
+        # New in pivot version
+        p = argmax(abs(a[k:,k])/s[k:]) + k
+        swap(a, p, k)
+        swap(b, p, k)
+        swap(s, p, k)
+        # The remainder remains as in the previous version
+        for i in range(k+1, n):
+            assert(a[k,k] != 0) # this shouldn't happen now, unless the matrix is singular
+            if (a[i,k] != 0): # no need to do anything when lambda is 0
+                lmbda = a[i,k]/a[k,k] # lambda is a reserved keyword in Python
+                a[i, k:n] = a[i, k:n] - lmbda*a[k, k:n] # list slice operations
+                b[i] = b[i] - lmbda*b[k]
