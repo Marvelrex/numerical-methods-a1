@@ -40,25 +40,19 @@ def fit_poly_2(points):
       Hint: This should be done by solving a linear system.
     '''
     ## YOUR CODE GOES HERE
-    a=Symbol('a')
-    b=Symbol('b')
-    c=Symbol('c')
-    cons=[[0 for i in range(3)] for j in range(3)]
-    for i in range(len(points)):
-                cons[i][0]=(-pow(points[i][0],2))
-                cons[i][1]=(-points[i][0])
-                cons[i][2]=(points[i][1])
-    arr=[cons[0][0],cons[0][1],cons[0][2]]
-    for j in range(3):
-            for k in range(3):
-                if(j==0):
-                    cons[j][k]=cons[j][k]-cons[j+1][k]
-                if(j==1):
-                    cons[j][k]=cons[j][k]-cons[j+1][k]
-                if(j==2):
-                    cons[j][k]=cons[j][k]-arr[k]
-    r=solve([cons[0][0]*a + cons[0][1]*b + cons[0][2],cons[1][0]*a + cons[1][1]*b + cons[1][2],arr[0]*a+arr[1]*b+arr[2]-c],[a,b,c])
-    return r
+    a, b, c = points
+    x1, y1 = a
+    x2, y2 = b
+    x3, y3 = c
+    assert (x1 != x2)
+    assert (x2 != x3)
+    assert (x1 != x3)
+    assert (y2 - y1) / (x2 - x1) != (y3 - y2) / (x3 - x2)
+    d = array([[1, x1, x1 ** 2], [1, x2, x2 ** 2], [1, x3, x3 ** 2]])
+    e = array([y1, y2, y3])
+    gauss_elimination(d, e)
+    return gauss_substitution(d, e)
+
     raise Exception("Function not implemented")
 
 
@@ -83,8 +77,8 @@ def fit_poly(points):
 
     ## YOUR CODE GOES HERE
     d = len(points)
-    a = zeros((n,n))
-    b = zeros(n)
+    a = zeros((d,d))
+    b = zeros(d)
     for i in range(d):
         for j in range(d):
             a[i][j] =(pow(points[i][0],2))
@@ -129,8 +123,8 @@ def tridiag_solver_n(n):
     x2[0]=9
     for j in range(1,n):
         x2[j] = 5
-    gauss_elimination(a,b)
-    return gauss_substitution(a,b)
+    gauss_elimination(x1,x2)
+    return gauss_substitution(x1,x2)
     raise Exception("Function not implemented")
 
 
@@ -158,7 +152,7 @@ def gauss_multiple(a, b):
     assert(determinant(a)!=0)
     d = len(b)
     for i  in range(0,d-1):
-        for j in range(k+1,d):
+        for j in range(i+1,d):
             if(a[j,i] !=0.0):
                 c=a [j,i]/a[i,i]
                 a[j,i+1:n] = a[j,i+1:n] - c*a[i,i-1:n]
