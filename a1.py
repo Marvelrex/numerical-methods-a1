@@ -225,7 +225,7 @@ def matrix_invert(a):
 
 ##Below From Textbook 
 def gauss_elimination(a, b):
-    assert (determinant(a)!= 0)
+#     assert (determinant(a)!= 0)
     n, m = shape(a)
     n2,  = shape(b)
     assert(n==n2)
