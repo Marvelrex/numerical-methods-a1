@@ -1,4 +1,22 @@
 from numpy import *
+
+def example_func():
+    '''
+        Important: READ THIS CAREFULLY.
+        Task: This function is an example, you don't have to modify it.
+        Example: Nothing to report here, really.
+        Test: This function is is tested in tests/test_example.py
+        This test just gives you a bonus, yay!
+        Hint: The functions below have to be implemented in Python, without
+        using any function from numpy's linear algebra module. In each function, a
+        docstring formatted as the present one explains what the
+        function must do (Task), gives an example of output
+        (Example), explains how it will be evaluated (Test), and
+        may give you some hints (Hint).
+        '''
+    return 'It works!'
+
+
 def square(a):
     '''
       Task: This function tests if a matrix is square. It returns True 
@@ -149,17 +167,35 @@ def gauss_multiple(a, b):
     '''
 
     ## YOUR CODE GOES HERE
+#     assert(determinant(a)!=0)
+#     d = len(b)
+#     for i  in range(0,d-1):
+#         for j in range(i+1,d):
+#             if(a[j,i] !=0.0):
+#                 c=a [j,i]/a[i,i]
+#                 a[j,i+1:d] = a[j,i+1:d] - c*a[i,i-1:d]
+#                 b[j]=b[j]-c*b[i]
+#     for k in range(d-1,-1,-1):
+#         b[k] = (b[k] - dot(a[k,k+1:],b[k+1:]))/a[k,k]
+#     return b
+
     assert(determinant(a)!=0)
-    d = len(b)
-    for i  in range(0,d-1):
-        for j in range(i+1,d):
-            if(a[j,i] !=0.0):
-                c=a [j,i]/a[i,i]
-                a[j,i+1:d] = a[j,i+1:d] - c*a[i,i-1:d]
-                b[j]=b[j]-c*b[i]
-    for k in range(d-1,-1,-1):
-        b[k] = (b[k] - dot(a[k,k+1:],b[k+1:]))/a[k,k]
+
+    n = len(b)
+
+    for k in range(0,n-1):
+        for i in range(k+1,n):
+            if a[i,k] != 0.0:
+                lam = a [i,k]/a[k,k]
+                a[i,k+1:n] = a[i,k+1:n] - lam*a[k,k+1:n]
+                b[i] = b[i] - lam*b[k]
+
+    # Back substitution
+    for k in range(n-1,-1,-1):
+        b[k] = (b[k] - dot(a[k,k+1:n],b[k+1:n]))/a[k,k]
+    
     return b
+
 
 
 
