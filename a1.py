@@ -1,4 +1,3 @@
-from sympy import *
 def square(a):
     '''
       Task: This function tests if a matrix is square. It returns True 
