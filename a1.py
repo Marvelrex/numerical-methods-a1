@@ -157,7 +157,7 @@ def gauss_multiple(a, b):
                 c=a [j,i]/a[i,i]
                 a[j,i+1:n] = a[j,i+1:n] - c*a[i,i-1:n]
                 b[j]=b[j]-c*b[i]
-    for k in range(n-1,-1,-1):
+    for k in range(d-1,-1,-1):
         b[k] = (b[k] - dot(a[k,k+1:],b[k+1:]))/a[k,k]
     return b
 
