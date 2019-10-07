@@ -99,7 +99,7 @@ def fit_poly(points):
     b = zeros(d)
     for i in range(d):
         for j in range(d):
-            a[i][j] =(pow(points[i][0],2))
+            a[i][j] =points[i][0]**j
     for k in range(d):
         b[k] = points[k][1]
     gauss_elimination(a,b)
