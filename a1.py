@@ -224,28 +224,6 @@ def matrix_invert(a):
     raise Exception("Function not implemented")
 
 ##Below From Textbook 
-# def gauss_elimination(a, b):
-# #     assert (determinant(a)!= 0)
-#     n, m = shape(a)
-#     n2,  = shape(b)
-#     assert(n==n2)
-#     # New in pivot version
-#     s = zeros(n)
-#     for i in range(n):
-#         s[i] = max(abs(a[i, :]))
-#     for k in range(n-1):
-#         # New in pivot version
-#         p = argmax(abs(a[k:,k])/s[k:]) + k
-#         swap(a, p, k)
-#         swap(b, p, k)
-#         swap(s, p, k)
-#         # The remainder remains as in the previous version
-#         for i in range(k+1, n):
-#             assert(a[k,k] != 0) # this shouldn't happen now, unless the matrix is singular
-#             if (a[i,k] != 0): # no need to do anything when lambda is 0
-#                 lmbda = a[i,k]/a[k,k] # lambda is a reserved keyword in Python
-#                 a[i, k:n] = a[i, k:n] - lmbda*a[k, k:n] # list slice operations
-#                 b[i] = b[i] - lmbda*b[k]
 def gauss_elimination(a, b, verbose=False):
     n, m = shape(a)
     n2,  = shape(b)
